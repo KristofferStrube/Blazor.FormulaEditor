@@ -1,0 +1,88 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
+@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
+@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<svg width="@dimensions.Width.AsString()" height="@dimensions.Height.AsString()">
+    <GenericExpressionSVGPresenter @bind-Expression="Expression" @bind-Expression:after=RerenderTree Context="context" />
+</svg>
+
+@code {
+    private (double Width, double Height) dimensions;
+    private MathEditorContext? context = default;
+
+    [Parameter]
+    public Expression? Expression { get; set; }
+
+    [Parameter]
+    public List<SupportedExpression> SupportedExpressions { get; set; } = new()
+        {
+            new("Identifier", @<text>a</text>, typeof(IdentifierExpression), () => new IdentifierExpression(), c => c.AvailableConstants.Count > 0),
+            new("Numeric", @<text>1</text>, typeof(NumericExpression), () => new NumericExpression(), _ => true),
+            new("Constant", @<text>π</text>, typeof(ConstantExpression), () => new ConstantExpression(), c => c.AvailableConstants.Count > 0),
+            new("Addition", @<text>+</text>, typeof(AdditionOperator), () => new AdditionOperator(), _ => true),
+            new("Subtraction", @<text>-</text>, typeof(SubtractionOperator), () => new SubtractionOperator(), _ => true),
+            new("Multiplication", @<text>•</text>, typeof(MultiplicationOperator), () => new MultiplicationOperator(), _ => true),
+            new("Fraction", @<FractionIcon />, typeof(FractionOperator), () => new FractionOperator(), _ => true),
+            new("Square Root", @<text>√</text>, typeof(SquareRootOperator), () => new SquareRootOperator(), _ => true),
+            new("Power", @<text>a²</text>, typeof(PowerOperator), () => new PowerOperator(), _ => true),
+            new("Function", @<text>sin()</text>, typeof(FunctionExpression), () => new FunctionExpression() { Function = sinFunction() }, c => c.AvailableFunctions.Count > 0),
+            new("Cases", @<text>{</text>, typeof(CasesExpression), () => new CasesExpression(), _ => true),
+            new("Equals", @<text>=</text>, typeof(EqualsOperator), () => new EqualsOperator(), _ => true),
+        };
+
+    [Parameter]
+    public List<Identifier> AvailableIdentifiers { get; set; } = [];
+
+    [Parameter]
+    public List<Constant> AvailableConstants { get; set; } = new()
+    {
+        new ("π", Math.PI),
+        new ("τ", Math.Tau),
+        new ("e", Math.E),
+    };
+
+    private static Function sinFunction() => new("sin", v => Math.Sin(v));
+
+    [Parameter]
+    public List<Function> AvailableFunctions { get; set; } = new()
+    {
+        sinFunction(),
+        new ("cos", v => Math.Cos(v)),
+        new ("tan", v => Math.Tan(v)),
+        new ("asin", v => Math.Asin(v)),
+        new ("acos", v => Math.Acos(v)),
+        new ("atan", v => Math.Atan(v)),
+    };
+
+    private void RerenderTree()
+    {
+        if (Expression is not null)
+        {
+            dimensions = Expression.GetDimensions();
+        }
+        else
+        {
+            dimensions = (20, 20);
+        }
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        context = new()
+            {
+                AvailableIdentifiers = AvailableIdentifiers,
+                AvailableConstants = AvailableConstants,
+                AvailableFunctions = AvailableFunctions,
+                RerenderTree = RerenderTree,
+                SupportedExpressions = SupportedExpressions,
+            };
+        RerenderTree();
+    }
+}
+

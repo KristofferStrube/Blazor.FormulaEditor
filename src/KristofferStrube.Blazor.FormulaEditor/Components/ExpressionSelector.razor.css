@@ -1,0 +1,8 @@
+﻿.option {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #EEE;
+}

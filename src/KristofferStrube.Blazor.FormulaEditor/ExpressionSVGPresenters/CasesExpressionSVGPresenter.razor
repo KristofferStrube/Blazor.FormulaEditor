@@ -1,0 +1,84 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
+@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<CasesExpression>
+
+<path stroke="black" stroke-width="2" fill="none" d="@Fork()" stroke-linecap="round"></path>
+
+@{
+    double previousCaseHeights = 0;
+}
+@foreach (CasesExpression.Case casesExpressionCase in Expression.Cases)
+{
+    var valueDimensions = casesExpressionCase.Value?.GetDimensions() ?? (20, 20);
+    var conditionDimensions = casesExpressionCase.Condition?.GetDimensions() ?? (20, 20);
+    double valueOffset = valueDimensions.Height < conditionDimensions.Height ? (conditionDimensions.Height - valueDimensions.Height) / 2 : 0;
+    double conditionOffset = conditionDimensions.Height < valueDimensions.Height ? (valueDimensions.Height - conditionDimensions.Height) / 2 : 0;
+    double forOffset = Math.Max(conditionDimensions.Height, valueDimensions.Height) > 20 ? (Math.Max(conditionDimensions.Height, valueDimensions.Height) - 20) / 2 : 0;
+
+    <GenericExpressionSVGPresenter @bind-Expression=casesExpressionCase.Value
+                                   @bind-Expression:after=Context.RerenderTree
+                                   PositionX=PositionX+CasesExpression.ForkWidth
+                                   PositionY=PositionY+previousCaseHeights+valueOffset
+                                   Context="Context" />
+
+    <text>
+        <text alignment-baseline="hanging"
+              text-anchor="start"
+              style="font-family:monospace;font-size:20px;"
+              x="@((PositionX+CasesExpression.ForkWidth+widestValueExpression+CasesExpression.ConditionSpacing).AsString())"
+              y="@((PositionY+previousCaseHeights+forOffset).AsString())">
+            @CasesExpression.ForText
+        </text>
+    </text>
+
+    <GenericExpressionSVGPresenter @bind-Expression=casesExpressionCase.Condition
+                                   @bind-Expression:after=Context.RerenderTree
+                                   PositionX=PositionX+CasesExpression.ForkWidth+widestValueExpression+CasesExpression.ConditionSpacing+CasesExpression.ForTextWidth
+                                   PositionY=PositionY+previousCaseHeights+conditionOffset
+                                   Context="Context" />
+
+    previousCaseHeights += Math.Max(valueDimensions.Height, conditionDimensions.Height) + CasesExpression.CaseSpacing;
+}
+
+<GenericExpressionSVGPresenter @bind-Expression=Expression.Otherwise
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX+CasesExpression.ForkWidth
+                               PositionY=PositionY+previousCaseHeights
+                               Context="Context" />
+
+<text alignment-baseline="hanging"
+      text-anchor="start"
+      style="font-family:monospace;font-size:20px;"
+      x="@((PositionX + CasesExpression.ForkWidth + widestValueExpression + CasesExpression.ConditionSpacing).AsString())"
+      y="@((PositionY + previousCaseHeights + otherwiseTextOffset).AsString())">
+    @CasesExpression.OtherwiseText
+</text>
+
+@code {
+    private (double Width, double Height) fullExpressionDimensions;
+    private double widestValueExpression;
+    private double otherwiseTextOffset;
+
+    private string Fork() => $"M {(PositionX + CasesExpression.ForkWidth - 1).AsString()} {(PositionY + 1).AsString()} {ForkFirstProng()} {ForkSecondProng()}";
+
+    private string ForkFirstProng() => $"C {PositionX.AsString()} {(PositionY + 1).AsString()} {(PositionX + CasesExpression.ForkWidth).AsString()} {(PositionY + fullExpressionDimensions.Height / 2).AsString()} {(PositionX + 1).AsString()} {(PositionY + fullExpressionDimensions.Height / 2).AsString()}";
+
+    private string ForkSecondProng() => $"C {(PositionX + CasesExpression.ForkWidth).AsString()} {(PositionY + fullExpressionDimensions.Height / 2).AsString()} {PositionX.AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()} {(PositionX + CasesExpression.ForkWidth - 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+
+    protected override void OnParametersSet()
+    {
+        fullExpressionDimensions = Expression.GetDimensions();
+        widestValueExpression = 0;
+        foreach (var casesExpressionCase in Expression.Cases)
+        {
+            var valueDimensions = casesExpressionCase.Value?.GetDimensions() ?? (20, 20);
+            widestValueExpression = Math.Max(widestValueExpression, valueDimensions.Width);
+        }
+        var otherwiseDimensions = Expression.Otherwise?.GetDimensions() ?? (20, 20);
+        otherwiseTextOffset = otherwiseDimensions.Height > 20 ? (otherwiseDimensions.Height - 20) / 2 : 0;
+    }
+}

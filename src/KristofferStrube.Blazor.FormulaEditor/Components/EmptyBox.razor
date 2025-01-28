@@ -1,0 +1,12 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Extensions
+
+
+<rect stroke="grey" stroke-width="2" fill="transparent" x="@((PositionX + 1).AsString())" y="@((PositionY + 1).AsString())" width="18" height="18"></rect>
+
+@code {
+    [Parameter]
+    public double PositionX { get; set; }
+
+    [Parameter]
+    public double PositionY { get; set; }
+}

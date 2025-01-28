@@ -1,0 +1,52 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@inherits ExpressionSVGPresenter<IdentifierExpression>
+
+@if (Expression.Editable)
+{
+    <Dropdown @ref=dropdown>
+        <ButtonContent>
+            @content()
+        </ButtonContent>
+        <TooltipContent>
+            <div style="display: flex; flex-direction: column;">
+                @for (int i = 0; i < Context.AvailableIdentifiers.Count; i++)
+                {
+                    Identifier identifier = Context.AvailableIdentifiers[i];
+                    <div class="option" onclick=@(() => SelectIdentifer(identifier))>
+                        @identifier.Name
+                    </div>
+                }
+            </div>
+        </TooltipContent>
+    </Dropdown>
+}
+else
+{
+    content();
+}
+
+@code {
+    private (double Width, double Height) dimensions;
+    private Dropdown dropdown = default!;
+
+    private RenderFragment content() =>@<text><text alignment-baseline="hanging" text-anchor="middle" style="font-family:monospace;font-size:20px;" x="@((PositionX + dimensions.Width / 2).AsString())" y="@PositionY.AsString()">@Expression.Value?.Name</text></text>;
+
+    protected override void OnParametersSet()
+    {
+        if (Expression.Value is null)
+        {
+            Expression.Value = Context.AvailableIdentifiers.FirstOrDefault();
+        }
+        dimensions = Expression.GetDimensions();
+    }
+
+    public async Task SelectIdentifer(Identifier identifier)
+    {
+        Expression.Value = identifier;
+        await dropdown.CloseAsync();
+        OnParametersSet();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,28 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<PowerOperator>
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Value
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX
+                               PositionY=PositionY+superScriptDimensions.Height-PowerOperator.PowerOffset
+                               Context="Context" />
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Power
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX+valueDimensions.Width
+                               PositionY=PositionY
+                               Context="Context" />
+
+@code {
+    private (double Width, double Height) valueDimensions;
+    private (double Width, double Height) superScriptDimensions;
+
+    protected override void OnParametersSet()
+    {
+        valueDimensions = Expression.Value?.GetDimensions() ?? (20, 20);
+        superScriptDimensions = Expression.Power?.GetDimensions() ?? (20, 20);
+    }
+}

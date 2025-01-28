@@ -1,0 +1,51 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@inherits ExpressionSVGPresenter<ConstantExpression>
+
+@if (Expression.Editable)
+{
+    <Dropdown @ref=dropdown>
+        <ButtonContent>
+            @content();
+        </ButtonContent>
+        <TooltipContent>
+            <div style="display: flex; flex-direction: column;">
+                @for (int i = 0; i < Context.AvailableConstants.Count; i++)
+                {
+                    Constant constant = Context.AvailableConstants[i];
+                    <div class="option" onclick=@(() => SelectConstant(constant))>
+                        @constant.Representation
+                    </div>
+                }
+            </div>
+        </TooltipContent>
+    </Dropdown>
+}
+else
+{
+    content();
+}
+
+@code {
+    private (double Width, double Height) dimensions;
+    private Dropdown dropdown = default!;
+
+    private RenderFragment content() => @<text><text alignment-baseline="hanging" text-anchor="middle" style="font-family:monospace;font-size:20px;" x="@((PositionX + dimensions.Width / 2).AsString())" y="@PositionY.AsString()">@Expression.Value?.Representation</text></text>;
+
+    protected override void OnParametersSet()
+    {
+        if (Expression.Value is null)
+        {
+            Expression.Value = Context.AvailableConstants.FirstOrDefault();
+        }
+        dimensions = Expression.GetDimensions();
+    }
+
+    public async Task SelectConstant(Constant constant)
+    {
+        Expression.Value = constant;
+        await dropdown.CloseAsync();
+        Context.RerenderTree();
+    }
+}

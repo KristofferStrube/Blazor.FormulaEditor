@@ -1,0 +1,32 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<SquareRootOperator>
+
+<path stroke-width="@SquareRootOperator.SymbolThickness"
+      stroke="black"
+      fill="none"
+      d="@data"></path>
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Value
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX+SquareRootOperator.WidthOfVWithFlip+SquareRootOperator.SymbolThickness
+                               PositionY=PositionY+SquareRootOperator.TopPadding+SquareRootOperator.SymbolThickness
+                               Context="Context" />
+
+@code {
+    private string data = "";
+
+    protected override void OnParametersSet()
+    {
+        var valueDimensions = Expression.Value?.GetDimensions() ?? (20, 20);
+        double offsetY = PositionY + valueDimensions.Height + SquareRootOperator.VSecondPartHeightBase - SquareRootOperator.VFirstPartHeight + SquareRootOperator.SymbolThickness / 2;
+        string move = $"M {(PositionX + SquareRootOperator.SymbolThickness / 2).AsString()} {offsetY.AsString()}";
+        string flip = $"l {(SquareRootOperator.FlipWidth).AsString()} 0";
+        string vFirstPart = $"l {(SquareRootOperator.VFirstPartWidth).AsString()} {(SquareRootOperator.VFirstPartHeight).AsString()}";
+        string vSecondPart = $"l {(SquareRootOperator.VSecondPartWidth).AsString()} {(-valueDimensions.Height - SquareRootOperator.VSecondPartHeightBase).AsString()}";
+        string vTop = $"l {(valueDimensions.Width+SquareRootOperator.SymbolThickness / 2).AsString()} 0";
+        data = $"{move} {flip} {vFirstPart} {vSecondPart} {vTop}";
+    }
+}

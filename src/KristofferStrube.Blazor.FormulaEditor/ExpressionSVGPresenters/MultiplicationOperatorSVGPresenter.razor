@@ -1,0 +1,61 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<MultiplicationOperator>
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@FirstParenthesis()" stroke-linecap="round"></path>
+}
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.First
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=@(PositionX + (Expression.Parenthesis ? BinaryOperator.ParenthesisWidth : 0))
+                               PositionY=PositionY+firstExpressionOffset
+                               Context="Context" />
+
+@if (Expression.ExplicitOperator)
+{
+    <text>
+        <text x=@((PositionX+(Expression.Parenthesis ? BinaryOperator.ParenthesisWidth : 0)+firstExpressionDimensions.Width+BinaryOperator.OperatorMargin+BinaryOperator.OperatorWidth /2).AsString())
+              y=@((PositionY + fullExpressionDimensions.Height / 2).AsString())
+              width="20"
+              height="20"
+              style="font-family:monospace;font-size:20px;"
+              alignment-baseline="middle"
+              text-anchor="middle">@Expression.Operator</text>
+    </text>
+}
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Second
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=@(PositionX + (Expression.Parenthesis ? BinaryOperator.ParenthesisWidth : 0) + firstExpressionDimensions.Width + (Expression.ExplicitOperator ? BinaryOperator.OperatorFullSpace : BinaryOperator.OperatorMargin))
+                               PositionY=PositionY+secondExpressionOffset
+                               Context="Context" />
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@SecondParenthesis()" stroke-linecap="round"></path>
+}
+
+@code {
+    private (double Width, double Height) fullExpressionDimensions;
+    private (double Width, double Height) firstExpressionDimensions;
+    private double firstExpressionOffset;
+    private double secondExpressionOffset;
+    private double operatorOffset;
+
+    private string FirstParenthesis() => $"M {(PositionX + BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionY + 1).AsString()} C {PositionX.AsString()} {(PositionY + BinaryOperator.ParenthesisWidth + 1).AsString()} {PositionX.AsString()} {(PositionY + fullExpressionDimensions.Height - BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionX + BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+    private string SecondParenthesis() => $"M {(PositionX + fullExpressionDimensions.Width - BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionY + 1).AsString()} C {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + fullExpressionDimensions.Height - BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionX + fullExpressionDimensions.Width - BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+
+    protected override void OnParametersSet()
+    {
+        fullExpressionDimensions = Expression.GetDimensions();
+        firstExpressionDimensions = Expression.First?.GetDimensions() ?? (20, 20);
+        var secondExpressionDimensions = Expression.Second?.GetDimensions() ?? (20, 20);
+        firstExpressionOffset = (fullExpressionDimensions.Height - firstExpressionDimensions.Height) / 2;
+        secondExpressionOffset = (fullExpressionDimensions.Height - secondExpressionDimensions.Height) / 2;
+        operatorOffset = (fullExpressionDimensions.Height - 20) / 2;
+    }
+}

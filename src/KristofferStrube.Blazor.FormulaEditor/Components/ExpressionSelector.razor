@@ -1,0 +1,42 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@typeparam TExpression where TExpression : Expression
+
+<Dropdown @ref=dropdown>
+    <ButtonContent>
+        <EmptyBox PositionX="PositionX" PositionY="PositionY" />
+    </ButtonContent>
+    <TooltipContent>
+        <div style="display: flex; flex-direction: column;">
+            @for (int i = 0; i < Context.SupportedExpressions.Count; i++)
+            {
+                SupportedExpression expression = Context.SupportedExpressions[i];
+                if (!expression.Expression.IsAssignableTo(typeof(TExpression)))
+                    continue;
+                <span class="option" onclick=@(async () => await SelectCreate(expression))>@expression.Icon <small>(@expression.Name)</small></span>
+            }
+        </div>
+    </TooltipContent>
+</Dropdown>
+
+@code {
+    private Dropdown dropdown = default!;
+
+    [Parameter, EditorRequired]
+    public required MathEditorContext Context { get; set; }
+
+    [Parameter, EditorRequired]
+    public required Func<SupportedExpression, Task> SelectCreateCallback { get; set; }
+
+    [Parameter]
+    public double PositionX { get; set; }
+
+    [Parameter]
+    public double PositionY { get; set; }
+
+    public async Task SelectCreate(SupportedExpression selectedExpression)
+    {
+        await SelectCreateCallback.Invoke(selectedExpression);
+        await dropdown.CloseAsync();
+    }
+}

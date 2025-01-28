@@ -1,0 +1,118 @@
+﻿@using KristofferStrube.Blazor.CSSView
+@using KristofferStrube.Blazor.DOM
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.Popover
+@using KristofferStrube.Blazor.Window
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+
+@if (IsContextMenuActivated)
+{
+    <g @ref=buttonReference
+        @oncontextmenu=ShowAsync
+        @oncontextmenu:preventDefault=true
+        @oncontextmenu:stopPropagation=true>@ButtonContent</g>
+}
+else
+{
+    <g @ref=buttonReference onclick=@ShowAsync>@ButtonContent</g>
+}
+
+<foreignObject>
+    <Popover @ref=popover Id="tooltip-click" style=@tooltipClickStyle>
+        @TooltipContent
+    </Popover>
+</foreignObject>
+
+@code {
+    private Window? window;
+    private EventListener<ToggleEvent>? toggleEventListener;
+    private EventListener<Event>? updateCoordinatesEventListener;
+    private double tooltipClickTop;
+    private double tooltipClickLeft;
+    private string tooltipClickStyle => $"margin:0;padding:0;top:{tooltipClickTop.AsString()}px;left:{tooltipClickLeft.AsString()}px;border-radius:5px;border:0px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;";
+
+    private ElementReference buttonReference;
+    private Element button = default!;
+    private Popover popover = default!;
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public required RenderFragment ButtonContent { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment TooltipContent { get; set; }
+
+    [Parameter]
+    public bool IsContextMenuActivated { get; set; }
+
+    [Inject]
+    public required IWindowService WindowService { get; set; }
+
+    [Inject]
+    public required IJSRuntime JSRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        button = await Element.CreateAsync(JSRuntime, buttonReference);
+        await UpdateCoodinates();
+
+        toggleEventListener = await EventListener<ToggleEvent>.CreateAsync(JSRuntime, async e =>
+        {
+            await UpdateCoodinates();
+            StateHasChanged();
+        });
+        await popover.AddOnBeforeToggleEventListener(toggleEventListener);
+
+        await SubscribeToWindowChangeEvents();
+    }
+
+    private async Task SubscribeToWindowChangeEvents()
+    {
+        window = await WindowService.GetWindowAsync();
+        updateCoordinatesEventListener = await EventListener<Event>.CreateAsync(JSRuntime, async e =>
+        {
+            await UpdateCoodinates();
+            StateHasChanged();
+        });
+        await window.AddOnResizeEventListenerAsync(updateCoordinatesEventListener);
+        await window.AddOnScrollEventListenerAsync(updateCoordinatesEventListener);
+    }
+
+    private async Task UpdateCoodinates()
+    {
+        DOMRect buttonDomRect = await button.GetBoundingClientRectAsync();
+        tooltipClickTop = buttonDomRect.Y + buttonDomRect.Height;
+        tooltipClickLeft = buttonDomRect.X;
+    }
+
+    public async Task ShowAsync()
+    {
+        await popover.ShowPopoverAsync();
+    }
+
+    public async Task CloseAsync()
+    {
+        await popover.HidePopoverAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (toggleEventListener is not null)
+        {
+            await popover.RemoveOnBeforeToggleEventListener(toggleEventListener);
+            await toggleEventListener.DisposeAsync();
+        }
+        if (updateCoordinatesEventListener is not null && window is not null)
+        {
+            await window.RemoveOnResizeEventListenerAsync(updateCoordinatesEventListener);
+            await window.RemoveOnScrollEventListenerAsync(updateCoordinatesEventListener);
+            await updateCoordinatesEventListener.DisposeAsync();
+            await window.DisposeAsync();
+        }
+    }
+}

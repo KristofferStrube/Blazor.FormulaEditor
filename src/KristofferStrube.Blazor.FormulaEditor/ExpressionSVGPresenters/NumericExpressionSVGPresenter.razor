@@ -1,0 +1,66 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<NumericExpression>
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@FirstParenthesis()" stroke-linecap="round"></path>
+}
+
+@if (editing && Expression.Editable)
+{
+    var dimensions = Expression.GetDimensions();
+    <foreignObject x=@PositionX.AsString() y=@PositionY.AsString() width="@dimensions.Width.AsString()" height="@dimensions.Height.AsString()">
+        <InputNumber @bind-Value=Expression.Value
+                     @bind-Value:after=Context.RerenderTree
+                     onblur=@(() => StopEdit())
+                     style=@($"padding:0;border:none;text-align:center;font-family:monospace;font-size:20px;line-height:1;width:{dimensions.Width.AsString()}px;height:{dimensions.Height.AsString()}px;") />
+    </foreignObject>
+}
+else
+{
+    var dimensions = Expression.GetDimensions();
+    <text>
+        <text alignment-baseline="hanging"
+              text-anchor="middle"
+              style="font-family:monospace;font-size:20px;"
+              x="@((PositionX + dimensions.Width / 2).AsString())"
+              y="@PositionY.AsString()"
+              ondblclick=@Edit>@Expression.Value</text>
+    </text>
+}
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@SecondParenthesis()" stroke-linecap="round"></path>
+}
+
+@code {
+    private (double Width, double Height) fullExpressionDimensions;
+
+    private string FirstParenthesis() => $"M {(PositionX + BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionY + 1).AsString()} C {PositionX.AsString()} {(PositionY + BinaryOperator.ParenthesisWidth + 1).AsString()} {PositionX.AsString()} {(PositionY + fullExpressionDimensions.Height - BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionX + BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+    private string SecondParenthesis() => $"M {(PositionX + fullExpressionDimensions.Width - BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionY + 1).AsString()} C {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + fullExpressionDimensions.Height - BinaryOperator.ParenthesisWidth - 1).AsString()} {(PositionX + fullExpressionDimensions.Width - BinaryOperator.ParenthesisWidth + 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+
+    protected override void OnParametersSet()
+    {
+        fullExpressionDimensions = Expression.GetDimensions();
+    }
+
+    private void Edit()
+    {
+        if (Expression.Editable)
+        {
+            editing = true;
+            StateHasChanged();
+        }
+    }
+
+    private void StopEdit()
+    {
+        editing = false;
+        Context.RerenderTree();
+        StateHasChanged();
+    }
+}

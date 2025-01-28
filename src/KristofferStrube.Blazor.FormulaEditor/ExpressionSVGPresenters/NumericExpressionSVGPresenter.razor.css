@@ -1,0 +1,11 @@
+﻿/* Chrome, Safari, Edge, Opera */
+::deep input::-webkit-outer-spin-button,
+::deep input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+::deep input[type=number] {
+    -moz-appearance: textfield;
+}

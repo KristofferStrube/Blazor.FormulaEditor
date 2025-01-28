@@ -1,0 +1,115 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@typeparam TExpression where TExpression : Expression
+
+@if (Expression is null)
+{
+    <ExpressionSelector PositionX="PositionX" PositionY="PositionY" TExpression="TExpression" SelectCreateCallback="CreateSelected" Context="Context" />
+}
+else
+{
+    if (Expression.Editable)
+    {
+        <Dropdown @ref=dropdown IsContextMenuActivated=true>
+            <ButtonContent>
+                <g onpointerenter=@PointerEnter
+                onpointerleave=@PointerLeave>
+                    <rect x=@PositionX.AsString()
+                    y=@PositionY.AsString()
+                    width=@dimensions!.Value.Width.AsString()
+                    height=@dimensions.Value.Height.AsString()
+                    stroke-width="1"
+                    stroke="@(hovered ? "transparent" : "transparent")"
+                    fill="transparent">
+                    </rect>
+                    <DynamicComponent Type="Expression.SVGPresenter" Parameters="parameters" />
+                </g>
+            </ButtonContent>
+            <TooltipContent>
+                <div style="display: flex; flex-direction: column;">
+                    <div onclick=@Remove class="option">
+                        <span class="icon">❌</span> Remove
+                    </div>
+                    @foreach((string icon, string text, Action action) in Expression.ExtraExpressionActions())
+                    {
+                        Func<Task> onclick = async () => { action.Invoke(); await dropdown.CloseAsync(); await ExpressionChanged.InvokeAsync(Expression); };
+                        <div onclick=@onclick class="option">
+                            <span class="icon">@icon</span> @text
+                        </div>
+                    }
+                </div>
+            </TooltipContent>
+        </Dropdown>
+    }
+    else
+    {
+        <DynamicComponent Type="Expression.SVGPresenter" Parameters="parameters" />
+    }
+}
+
+@code {
+    private (double Width, double Height)? dimensions;
+    private bool hovered = false;
+    private Dropdown dropdown = default!;
+
+    private Dictionary<string, object>? parameters;
+
+    [Parameter, EditorRequired]
+    public required TExpression? Expression { get; set; }
+
+    [Parameter, EditorRequired]
+    public required MathEditorContext Context { get; set; }
+
+    [Parameter]
+    public EventCallback<TExpression?> ExpressionChanged { get; set; }
+
+    [Parameter]
+    public double PositionX { get; set; }
+
+    [Parameter]
+    public double PositionY { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Expression is not null)
+        {
+            parameters = new Dictionary<string, object>()
+                {
+                    ["Expression"] = Expression,
+                    ["Context"] = Context,
+                    ["PositionX"] = PositionX,
+                    ["PositionY"] = PositionY,
+                };
+        }
+        else
+        {
+            parameters = null;
+        }
+        dimensions = Expression?.GetDimensions();
+    }
+
+    private void PointerEnter()
+    {
+        hovered = true;
+        StateHasChanged();
+    }
+
+    private void PointerLeave()
+    {
+        hovered = false;
+        StateHasChanged();
+    }
+
+    private void Remove()
+    {
+        Expression = null;
+        ExpressionChanged.InvokeAsync(null);
+    }
+
+    private async Task CreateSelected(SupportedExpression selectedExpression)
+    {
+        Expression = (TExpression)selectedExpression.Create();
+        await ExpressionChanged.InvokeAsync(Expression);
+    }
+}

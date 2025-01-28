@@ -1,0 +1,40 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<FractionOperator>
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Numerator
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX+firstExpressionOffset
+                               PositionY=PositionY
+                               Context="Context" />
+
+<line stroke-width="@FractionOperator.SeparatorThickness"
+      stroke="black"
+      x1="@PositionX.AsString()"
+      y1="@((PositionY + firstExpressionDimensions.Height + FractionOperator.SeparatorMargin + FractionOperator.SeparatorThickness / 2).AsString())"
+      x2="@((PositionX + fullExpressionDimensions.Width).AsString())"
+      y2="@((PositionY + firstExpressionDimensions.Height + FractionOperator.SeparatorMargin + FractionOperator.SeparatorThickness / 2).AsString())"></line>
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Denominator
+                               @bind-Expression:after=Context.RerenderTree
+                               PositionX=PositionX+secondExpressionOffset
+                               PositionY=PositionY+firstExpressionDimensions.Height+FractionOperator.SeparatorFullSpace
+                               Context="Context" />
+
+@code {
+    private (double Width, double Height) fullExpressionDimensions;
+    private (double Width, double Height) firstExpressionDimensions;
+    private double firstExpressionOffset;
+    private double secondExpressionOffset;
+
+    protected override void OnParametersSet()
+    {
+        fullExpressionDimensions = Expression.GetDimensions();
+        firstExpressionDimensions = Expression.Numerator?.GetDimensions() ?? (20, 20);
+        var secondExpressionDimensions = Expression.Denominator?.GetDimensions() ?? (20, 20);
+        firstExpressionOffset = (fullExpressionDimensions.Width - firstExpressionDimensions.Width) / 2;
+        secondExpressionOffset = (fullExpressionDimensions.Width - secondExpressionDimensions.Width) / 2;
+    }
+}

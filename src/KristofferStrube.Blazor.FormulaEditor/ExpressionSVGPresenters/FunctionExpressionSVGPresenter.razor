@@ -1,0 +1,73 @@
+﻿@using KristofferStrube.Blazor.FormulaEditor.Components
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ExpressionSVGPresenter<FunctionExpression>
+
+
+@if (Expression.Editable)
+{
+    <Dropdown @ref=dropdown>
+        <ButtonContent>
+            @FunctionName();
+        </ButtonContent>
+        <TooltipContent>
+            <div style="display: flex; flex-direction: column;">
+                @for (int i = 0; i < Context.AvailableFunctions.Count; i++)
+                {
+                    Function function = Context.AvailableFunctions[i];
+                    <div class="option" onclick=@(() => SelectFunction(function))>
+                        @function.Name
+                    </div>
+                }
+            </div>
+        </TooltipContent>
+    </Dropdown>
+}
+else
+{
+    FunctionName();
+}
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@FirstParenthesis()" stroke-linecap="round"></path>
+}
+
+<GenericExpressionSVGPresenter @bind-Expression=@Expression.Input
+@bind-Expression:after=Context.RerenderTree
+PositionX=@(PositionX + (Expression.Parenthesis ? FunctionExpression.ParenthesisWidth : 0) + functionNameLength)
+PositionY=PositionY
+Context="Context" />
+
+@if (Expression.Parenthesis)
+{
+    <path stroke="black" stroke-width="2" fill="none" d="@SecondParenthesis()" stroke-linecap="round"></path>
+}
+
+@code {
+    private Dropdown dropdown = default!;
+    private (double Width, double Height) fullExpressionDimensions;
+    private double functionNameLength;
+    private RenderFragment FunctionName() => @<text><text alignment-baseline="middle" text-anchor="start" style="font-family:monospace;font-size:20px;" x="@(PositionX.AsString())" y="@((PositionY+fullExpressionDimensions.Height/2).AsString())">@Expression.Function.Name</text></text>;
+
+    private string FirstParenthesis() => $"M {(PositionX + functionNameLength + FunctionExpression.ParenthesisWidth - 1).AsString()} {(PositionY + 1).AsString()} C {(PositionX + functionNameLength).AsString()} {(PositionY + FunctionExpression.ParenthesisWidth + 1).AsString()} {(PositionX + functionNameLength).AsString()} {(PositionY + fullExpressionDimensions.Height - FunctionExpression.ParenthesisWidth - 1).AsString()} {(PositionX + functionNameLength + FunctionExpression.ParenthesisWidth - 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+    private string SecondParenthesis() => $"M {(PositionX + fullExpressionDimensions.Width - FunctionExpression.ParenthesisWidth + 1).AsString()} {(PositionY + 1).AsString()} C {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + FunctionExpression.ParenthesisWidth + 1).AsString()} {(PositionX + fullExpressionDimensions.Width).AsString()} {(PositionY + fullExpressionDimensions.Height - FunctionExpression.ParenthesisWidth - 1).AsString()} {(PositionX + fullExpressionDimensions.Width - FunctionExpression.ParenthesisWidth + 1).AsString()} {(PositionY + fullExpressionDimensions.Height - 1).AsString()}";
+
+    protected override void OnParametersSet()
+    {
+        if (Expression.Function is null)
+        {
+            Expression.Function = Context.AvailableFunctions.FirstOrDefault()!;
+        }
+        fullExpressionDimensions = Expression.GetDimensions();
+        functionNameLength = Expression.Function.Name.Length * 12;
+    }
+
+    public async Task SelectFunction(Function function)
+    {
+        Expression.Function = function;
+        await dropdown.CloseAsync();
+        Context.RerenderTree();
+    }
+}
