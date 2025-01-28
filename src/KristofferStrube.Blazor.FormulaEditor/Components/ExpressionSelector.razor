@@ -13,7 +13,7 @@
                 SupportedExpression expression = Context.SupportedExpressions[i];
                 if (!expression.Expression.IsAssignableTo(typeof(TExpression)))
                     continue;
-                <span class="option" onclick=@(async () => await SelectCreate(expression))>@expression.Icon <small>(@expression.Name)</small></span>
+                <span class="option" onpointerup=@(async () => await SelectCreate(expression))>@expression.Icon <small>(@expression.Name)</small></span>
             }
         </div>
     </TooltipContent>

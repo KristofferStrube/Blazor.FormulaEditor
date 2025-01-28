@@ -14,7 +14,7 @@
                 @for (int i = 0; i < Context.AvailableIdentifiers.Count; i++)
                 {
                     Identifier identifier = Context.AvailableIdentifiers[i];
-                    <div class="option" onclick=@(() => SelectIdentifer(identifier))>
+                    <div class="option" onpointerup=@(() => SelectIdentifer(identifier))>
                         @identifier.Name
                     </div>
                 }

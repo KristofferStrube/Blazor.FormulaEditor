@@ -6,22 +6,27 @@
 
 <h1>Blazor Formula Editor</h1>
 <p>The following are some samples of expressions that can be edited:</p>
-<MathEditor Expression="sineWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
+<MathEditor Expression="sineWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="squareWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
+<MathEditor Expression="squareWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="sawtoothWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
+<MathEditor Expression="sawtoothWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="triangleWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
+<MathEditor Expression="triangleWave" AvailableIdentifiers=@identifiers />
 @code {
+    private static readonly Identifier nIdentifier = new Identifier("n", () => 1);
+    private static readonly Identifier xIdentifier = new Identifier("x", () => 1);
+    private static readonly Identifier yIdentifier = new Identifier("y", () => 1);
+    private static readonly List<Identifier> identifiers = [nIdentifier, xIdentifier, yIdentifier];
+
     private Expression sineWave = new CasesExpression()
         {
             Cases = [new() {
                 Value = new NumericExpression() { Value = 1 },
-                Condition = new EqualsOperator() { First = new IdentifierExpression() { Value = new Identifier("n", () => 1) }, Second = new NumericExpression() { Value = 1 } }
+                Condition = new EqualsOperator() { First = new IdentifierExpression() { Value = nIdentifier }, Second = new NumericExpression() { Value = 1 } }
             }],
             Otherwise = new NumericExpression() { Value = 0 },
         };
@@ -33,7 +38,7 @@
                 Numerator = new NumericExpression() { Value = 2 },
                 Denominator = new MultiplicationOperator()
                 {
-                    First = new IdentifierExpression() { Value = new Identifier("n", () => 1) },
+                    First = new IdentifierExpression() { Value = nIdentifier },
                     Second = new ConstantExpression() { Value = new Constant("π", Math.PI) },
                     ExplicitOperator = false
                 }
@@ -44,7 +49,7 @@
                 Second = new PowerOperator()
                 {
                     Value = new NumericExpression() { Value = -1, Parenthesis = true },
-                    Power = new IdentifierExpression() { Value = new Identifier("n", () => 1) }
+                    Power = new IdentifierExpression() { Value = nIdentifier }
                 },
                 Parenthesis = true
             },
@@ -58,7 +63,7 @@
                 Value = new NumericExpression() { Value = -1, Parenthesis = true },
                 Power = new AdditionOperator()
                 {
-                    First = new IdentifierExpression() { Value = new Identifier("n", () => 1) },
+                    First = new IdentifierExpression() { Value = nIdentifier },
                     Second = new NumericExpression() { Value = 1 },
                     Parenthesis = true
                 }
@@ -68,7 +73,7 @@
                 Numerator = new NumericExpression() { Value = 2 },
                 Denominator = new MultiplicationOperator()
                 {
-                    First = new IdentifierExpression() { Value = new Identifier("n", () => 1) },
+                    First = new IdentifierExpression() { Value = nIdentifier },
                     Second = new ConstantExpression() { Value = new Constant("π", Math.PI) },
                     ExplicitOperator = false
                 }
@@ -88,7 +93,7 @@
                     {
                         Numerator = new MultiplicationOperator()
                         {
-                            First = new IdentifierExpression() { Value = new Identifier("n", () => 1) },
+                            First = new IdentifierExpression() { Value = nIdentifier },
                             Second = new ConstantExpression() { Value = new Constant("π", Math.PI) },
                             ExplicitOperator = false
                         },
@@ -103,7 +108,7 @@
                 Value = new MultiplicationOperator()
                 {
                     First = new ConstantExpression() { Value = new Constant("π", Math.PI) },
-                    Second = new IdentifierExpression() { Value = new Identifier("n", () => 1) },
+                    Second = new IdentifierExpression() { Value = nIdentifier },
                     ExplicitOperator = false,
                     Parenthesis = true
                 },
