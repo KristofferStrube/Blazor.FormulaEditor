@@ -1,0 +1,78 @@
+﻿@page "/evaluated"
+@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+
+<PageTitle>Blazor Formula Editor</PageTitle>
+
+<h1>Evaluated</h1>
+<p>It is also possible to evaluate the expressions if they are complete and have their variables defined.</p>
+<label for="x">x:</label>
+<InputNumber id="x" @bind-Value=x />
+<br />
+<label for="y">y:</label>
+<InputNumber id="y" @bind-Value=y />
+<br />
+<br />
+<MathEditor Expression="formula" AvailableIdentifiers=@([xIdentifier, yIdentifier]) />
+<br />
+<br />
+<button class="btn btn-success" @onclick=Evaluate>Evaluate expression</button>
+<br />
+<br />
+@if (noResult)
+{
+    <span class="badge bg-danger">Expression was not complete.</span>
+}
+else if (result is not null)
+{
+    <text>
+        Result: <span class="badge bg-success">@result</span>
+    </text>
+}
+
+@code {
+    private double x = 8;
+    private double y = 3;
+    private NumberReturningExpression formula = default!;
+    private Identifier xIdentifier = default!;
+    private Identifier yIdentifier = default!;
+    private double? result;
+    private bool noResult;
+
+    protected override void OnInitialized()
+    {
+        xIdentifier = new Identifier("x", () => x);
+        yIdentifier = new Identifier("y", () => y);
+
+        formula = new MultiplicationOperator()
+            {
+                First = new NumericExpression() { Value = 10 },
+                Second = new AdditionOperator()
+                {
+                    First = new SquareRootOperator()
+                    {
+                        Value = new FractionOperator()
+                        {
+                            Numerator = new IdentifierExpression() { Value = xIdentifier },
+                            Denominator = new NumericExpression() { Value = 2 }
+                        }
+                    },
+                    Second = new IdentifierExpression() { Value = yIdentifier },
+                    Parenthesis = true
+                }
+            };
+    }
+
+    private void Evaluate()
+    {
+        try
+        {
+            result = formula.Evaluate();
+            noResult = false;
+        }
+        catch
+        {
+            noResult = true;
+        }
+    }
+}

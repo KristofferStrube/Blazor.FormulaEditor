@@ -2,9 +2,9 @@
 @using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
 @using KristofferStrube.Blazor.FormulaEditor.Expressions
 
-<PageTitle>MathEditor</PageTitle>
+<PageTitle>Blazor Formula Editor</PageTitle>
 
-<h1>MathEditor</h1>
+<h1>Blazor Formula Editor</h1>
 <p>The following are some samples of expressions that can be edited:</p>
 <MathEditor Expression="sineWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
 <br />
@@ -16,14 +16,6 @@
 <br />
 <br />
 <MathEditor Expression="triangleWave" AvailableIdentifiers=@([new Identifier("n", () => 1)]) />
-<br />
-<br />
-<p>And here are some epxressions where only parts of it can be edited:</p>
-<MathEditor Expression="partiallyEditableAddition" AvailableIdentifiers=@([new Identifier("x", () => 1)]) />
-<br />
-<br />
-<MathEditor Expression="partiallyEditableFraction" AvailableIdentifiers=@([new Identifier("x", () => 1)]) />
-
 @code {
     private Expression sineWave = new CasesExpression()
         {
@@ -117,25 +109,5 @@
                 },
                 Power = new NumericExpression() { Value = 2 }
             }
-        };
-
-    private Expression partiallyEditableAddition = new AdditionOperator()
-        {
-            First = new NumericExpression() { Value = 3, Editable = false },
-            Second = null,
-            Editable = false
-        };
-
-    private Expression partiallyEditableFraction = new FractionOperator()
-        {
-            Numerator = null,
-            Denominator = new MultiplicationOperator()
-            {
-                First = new IdentifierExpression() { Value = new Identifier("x", () => 1), Editable = false },
-                Second = new ConstantExpression() { Value = new Constant("e", Math.E), Editable = false },
-                Parenthesis = true,
-                Editable = false
-            },
-            Editable = false
         };
 }

@@ -1,0 +1,34 @@
+﻿@page "/Editable"
+@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
+@using KristofferStrube.Blazor.FormulaEditor.Expressions
+
+<PageTitle>Blazor Formula Editor</PageTitle>
+
+<h1>Editable</h1>
+<p>Here are some epxressions where only parts of it can be edited:</p>
+<MathEditor Expression="partiallyEditableAddition" AvailableIdentifiers=@([new Identifier("x", () => 1)]) />
+<br />
+<br />
+<MathEditor Expression="partiallyEditableFraction" AvailableIdentifiers=@([new Identifier("x", () => 1)]) />
+
+@code {
+    private Expression partiallyEditableAddition = new AdditionOperator()
+        {
+            First = new NumericExpression() { Value = 3, Editable = false },
+            Second = null,
+            Editable = false
+        };
+
+    private Expression partiallyEditableFraction = new FractionOperator()
+        {
+            Numerator = null,
+            Denominator = new MultiplicationOperator()
+            {
+                First = new IdentifierExpression() { Value = new Identifier("x", () => 1), Editable = false },
+                Second = new ConstantExpression() { Value = new Constant("e", Math.E), Editable = false },
+                Parenthesis = true,
+                Editable = false
+            },
+            Editable = false
+        };
+}
