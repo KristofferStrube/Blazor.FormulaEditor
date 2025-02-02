@@ -13,7 +13,10 @@ public class FractionOperator : NumberReturningExpression
     public NumberReturningExpression? Numerator { get; set; }
     public NumberReturningExpression? Denominator { get; set; }
 
-    public override double Evaluate() => Numerator!.Evaluate() / Denominator!.Evaluate();
+    public override double Evaluate()
+    {
+        return Numerator!.Evaluate() / Denominator!.Evaluate();
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

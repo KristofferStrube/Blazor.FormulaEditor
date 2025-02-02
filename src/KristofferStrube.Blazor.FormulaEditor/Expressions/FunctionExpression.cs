@@ -21,7 +21,10 @@ public class FunctionExpression : NumberReturningExpression
 
     public bool Parenthesis { get; set; } = true;
 
-    public override double Evaluate() => Function.Expression.Invoke(Input!.Evaluate());
+    public override double Evaluate()
+    {
+        return Function.Expression.Invoke(Input!.Evaluate());
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

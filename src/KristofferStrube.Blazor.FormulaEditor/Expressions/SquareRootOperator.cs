@@ -17,7 +17,10 @@ public class SquareRootOperator : NumberReturningExpression
 
     public NumberReturningExpression? Value { get; set; }
 
-    public override double Evaluate() => Math.Sqrt(Value!.Evaluate());
+    public override double Evaluate()
+    {
+        return Math.Sqrt(Value!.Evaluate());
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

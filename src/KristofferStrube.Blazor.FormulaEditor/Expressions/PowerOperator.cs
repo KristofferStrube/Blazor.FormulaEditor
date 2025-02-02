@@ -11,7 +11,10 @@ public class PowerOperator : NumberReturningExpression
     public NumberReturningExpression? Value { get; set; }
     public NumberReturningExpression? Power { get; set; }
 
-    public override double Evaluate() => Math.Pow(Value!.Evaluate(), Power!.Evaluate());
+    public override double Evaluate()
+    {
+        return Math.Pow(Value!.Evaluate(), Power!.Evaluate());
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

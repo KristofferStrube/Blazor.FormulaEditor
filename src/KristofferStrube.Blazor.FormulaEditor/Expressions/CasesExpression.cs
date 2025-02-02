@@ -18,31 +18,35 @@ public class CasesExpression : NumberReturningExpression
     public List<Case> Cases { get; set; } = [];
     public NumberReturningExpression? Otherwise { get; set; }
 
-    public override List<(string Icon, string Text, Action Action)> ExtraExpressionActions() =>
-        [
+    public override List<(string Icon, string Text, Action Action)> ExtraExpressionActions()
+    {
+        return [
             ..base.ExtraExpressionActions(),
             ("➕", "Add Case", () => Cases.Add(new()))
         ];
+    }
 
     public override double Evaluate()
     {
         foreach (Case casesExpressionCase in Cases)
         {
             if (casesExpressionCase.Condition?.Evaluate() is true)
+            {
                 return casesExpressionCase.Value!.Evaluate();
+            }
         }
         return Otherwise!.Evaluate();
     }
 
     public override (double Width, double Height) GetDimensions()
     {
-        var otherwiserDimensions = Otherwise?.GetDimensions() ?? (20, 20);
+        (double Width, double Height) otherwiserDimensions = Otherwise?.GetDimensions() ?? (20, 20);
         double maxWidth = otherwiserDimensions.Width + ConditionSpacing + OtherwiseText.Length * 12;
         double totalHeight = otherwiserDimensions.Height;
-        foreach (var casesExpressionCase in Cases)
+        foreach (Case casesExpressionCase in Cases)
         {
-            var valueDimensions = casesExpressionCase.Value?.GetDimensions() ?? (20, 20);
-            var conditionDimensions = casesExpressionCase.Condition?.GetDimensions() ?? (20, 20);
+            (double Width, double Height) valueDimensions = casesExpressionCase.Value?.GetDimensions() ?? (20, 20);
+            (double Width, double Height) conditionDimensions = casesExpressionCase.Condition?.GetDimensions() ?? (20, 20);
             maxWidth = Math.Max(maxWidth, valueDimensions.Width + ConditionSpacing + ForTextWidth + conditionDimensions.Width);
             totalHeight += Math.Max(valueDimensions.Height, conditionDimensions.Height) + CaseSpacing;
         }

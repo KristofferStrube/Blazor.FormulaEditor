@@ -4,5 +4,8 @@ public class EqualsOperator : BinaryBooleanOperator
 {
     public override string Operator => "=";
 
-    public override bool Evaluate() => First?.Evaluate() == Second?.Evaluate();
+    public override bool Evaluate()
+    {
+        return First?.Evaluate() == Second?.Evaluate();
+    }
 }

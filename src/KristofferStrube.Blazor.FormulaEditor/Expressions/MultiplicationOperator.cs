@@ -10,7 +10,10 @@ public class MultiplicationOperator : BinaryOperator
 
     public override Type SVGPresenter => typeof(MultiplicationOperatorSVGPresenter);
 
-    public override double Evaluate() => First!.Evaluate() * Second!.Evaluate();
+    public override double Evaluate()
+    {
+        return First!.Evaluate() * Second!.Evaluate();
+    }
 
     public override List<(string Icon, string Text, Action Action)> ExtraExpressionActions()
     {

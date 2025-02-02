@@ -8,7 +8,10 @@ public class ConstantExpression : NumberReturningExpression
 
     public Constant? Value { get; set; }
 
-    public override double Evaluate() => Value!.Value;
+    public override double Evaluate()
+    {
+        return Value!.Value;
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

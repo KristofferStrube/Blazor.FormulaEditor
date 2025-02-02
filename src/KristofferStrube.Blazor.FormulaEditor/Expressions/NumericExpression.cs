@@ -18,7 +18,10 @@ public class NumericExpression : NumberReturningExpression
         ];
     }
 
-    public override double Evaluate() => Value;
+    public override double Evaluate()
+    {
+        return Value;
+    }
 
     public override (double Width, double Height) GetDimensions()
     {

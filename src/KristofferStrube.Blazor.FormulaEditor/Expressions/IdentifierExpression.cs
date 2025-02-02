@@ -8,7 +8,10 @@ public class IdentifierExpression : NumberReturningExpression
 
     public Identifier? Value { get; set; }
 
-    public override double Evaluate() => Value!.GetValue();
+    public override double Evaluate()
+    {
+        return Value!.GetValue();
+    }
 
     public override (double Width, double Height) GetDimensions()
     {
