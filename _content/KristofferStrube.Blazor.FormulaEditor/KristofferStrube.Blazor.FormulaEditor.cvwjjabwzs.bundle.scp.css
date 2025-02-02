@@ -1,0 +1,98 @@
+/* _content/KristofferStrube.Blazor.FormulaEditor/BooleanExpressionSVGPresenter/BinaryBooleanOperatorSVGPresenter.razor.rz.scp.css */
+input[b-snw820u0e3] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/Components/ExpressionSelector.razor.rz.scp.css */
+.option[b-am7awfvmvn] {
+    padding: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.option:hover[b-am7awfvmvn] {
+    background-color: #EEE;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/BinaryOperatorSVGPresenter.razor.rz.scp.css */
+input[b-m8po09p8vo] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/CasesExpressionSVGPresenter.razor.rz.scp.css */
+input[b-57nxsbnmvc] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/ConstantExpressionSVGPresenter.razor.rz.scp.css */
+.option[b-tn66m7jf0p] {
+    padding: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.option:hover[b-tn66m7jf0p] {
+    background-color: #EEE;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/FractionOperatorSVGPresenter.razor.rz.scp.css */
+input[b-swi1tfsn5j] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/FunctionExpressionSVGPresenter.razor.rz.scp.css */
+input[b-b8y81cdmb0] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/GenericExpressionSVGPresenter.razor.rz.scp.css */
+.option[b-59oi46dc9y] {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.option:hover[b-59oi46dc9y] {
+    background-color: #EEE;
+}
+
+.icon[b-59oi46dc9y] {
+    width: 20px;
+    display: inline-block;
+    text-align: center;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/IdentifierExpressionSVGPresenter.razor.rz.scp.css */
+.option[b-qovmkxujp5] {
+    padding: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.option:hover[b-qovmkxujp5] {
+    background-color: #EEE;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/MultiplicationOperatorSVGPresenter.razor.rz.scp.css */
+input[b-3raqzou1kz] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/NumericExpressionSVGPresenter.razor.rz.scp.css */
+/* Chrome, Safari, Edge, Opera */
+[b-1dlg1j3kfx] input::-webkit-outer-spin-button,
+[b-1dlg1j3kfx] input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+[b-1dlg1j3kfx] input[type=number] {
+    -moz-appearance: textfield;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/PowerOperatorSVGPresenter.razor.rz.scp.css */
+input[b-11beebak84] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/ExpressionSVGPresenters/SquareRootOperatorSVGPresenter.razor.rz.scp.css */
+input[b-1p6bmj30bd] {
+    width: 50px;
+}
+/* _content/KristofferStrube.Blazor.FormulaEditor/MathEditor.razor.rz.scp.css */
+.option[b-my1icoi4jb] {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.option:hover[b-my1icoi4jb] {
+    background-color: #EEE;
+}
