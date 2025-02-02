@@ -41,16 +41,18 @@ public class CasesExpression : NumberReturningExpression
     public override (double Width, double Height) GetDimensions()
     {
         (double Width, double Height) otherwiserDimensions = Otherwise?.GetDimensions() ?? (20, 20);
-        double maxWidth = otherwiserDimensions.Width + ConditionSpacing + OtherwiseText.Length * 12;
+        double maxWidthLeft = otherwiserDimensions.Width;
+        double maxWidthRight = OtherwiseText.Length * 12;
         double totalHeight = otherwiserDimensions.Height;
         foreach (Case casesExpressionCase in Cases)
         {
             (double Width, double Height) valueDimensions = casesExpressionCase.Value?.GetDimensions() ?? (20, 20);
             (double Width, double Height) conditionDimensions = casesExpressionCase.Condition?.GetDimensions() ?? (20, 20);
-            maxWidth = Math.Max(maxWidth, valueDimensions.Width + ConditionSpacing + ForTextWidth + conditionDimensions.Width);
+            maxWidthLeft = Math.Max(maxWidthLeft, valueDimensions.Width);
+            maxWidthRight = Math.Max(maxWidthRight, ForTextWidth + conditionDimensions.Width);
             totalHeight += Math.Max(valueDimensions.Height, conditionDimensions.Height) + CaseSpacing;
         }
-        return (ForkWidth + maxWidth, totalHeight);
+        return (ForkWidth + maxWidthLeft + ConditionSpacing + maxWidthRight, totalHeight);
     }
 
     public class Case
