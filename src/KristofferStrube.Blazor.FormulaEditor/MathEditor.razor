@@ -6,9 +6,10 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
+@typeparam TExpression where TExpression : Expression
 
 <svg width="@dimensions.Width.AsString()" height="@dimensions.Height.AsString()">
-    <GenericExpressionSVGPresenter @bind-Expression="Expression" @bind-Expression:after=RerenderTree Context="context" />
+    <GenericExpressionSVGPresenter @bind-Expression="Expression" @bind-Expression:after=ExpressionUpdated Context="context" />
 </svg>
 
 @code {
@@ -16,7 +17,10 @@
     private MathEditorContext? context = default;
 
     [Parameter]
-    public Expression? Expression { get; set; }
+    public TExpression? Expression { get; set; }
+
+    [Parameter]
+    public EventCallback<TExpression?>? ExpressionChanged { get; set; }
 
     [Parameter]
     public List<SupportedExpression> SupportedExpressions { get; set; } = new()
@@ -58,6 +62,15 @@
         new ("acos", v => Math.Acos(v)),
         new ("atan", v => Math.Atan(v)),
     };
+
+    private async Task ExpressionUpdated()
+    {
+        if (ExpressionChanged is not null)
+        {
+            await ExpressionChanged.Value.InvokeAsync(Expression);
+        }
+        RerenderTree();
+    }
 
     private void RerenderTree()
     {

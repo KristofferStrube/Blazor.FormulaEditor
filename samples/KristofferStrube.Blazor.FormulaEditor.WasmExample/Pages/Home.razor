@@ -6,16 +6,16 @@
 
 <h1>Blazor Formula Editor</h1>
 <p>The following are some samples of expressions that can be edited:</p>
-<MathEditor Expression="sineWave" AvailableIdentifiers=@identifiers />
+<MathEditor @bind-Expression="sineWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="squareWave" AvailableIdentifiers=@identifiers />
+<MathEditor @bind-Expression="squareWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="sawtoothWave" AvailableIdentifiers=@identifiers />
+<MathEditor @bind-Expression="sawtoothWave" AvailableIdentifiers=@identifiers />
 <br />
 <br />
-<MathEditor Expression="triangleWave" AvailableIdentifiers=@identifiers />
+<MathEditor @bind-Expression="triangleWave" AvailableIdentifiers=@identifiers />
 @code {
     private static readonly Identifier nIdentifier = new Identifier("n", () => 1);
     private static readonly Identifier xIdentifier = new Identifier("x", () => 1);

@@ -13,7 +13,7 @@
 <InputNumber id="y" @bind-Value=y />
 <br />
 <br />
-<MathEditor Expression="formula" AvailableIdentifiers=@([xIdentifier, yIdentifier]) />
+<MathEditor @bind-Expression="formula" AvailableIdentifiers=@([xIdentifier, yIdentifier]) />
 <br />
 <br />
 <button class="btn btn-success" @onclick=Evaluate>Evaluate expression</button>
