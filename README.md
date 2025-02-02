@@ -2,7 +2,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/KristofferStrube/Blazor.FormulaEditor)](https://github.com/KristofferStrube/Blazor.FormulaEditor/issues)
 [![GitHub forks](https://img.shields.io/github/forks/KristofferStrube/Blazor.FormulaEditor)](https://github.com/KristofferStrube/Blazor.FormulaEditor/network/members)
 [![GitHub stars](https://img.shields.io/github/stars/KristofferStrube/Blazor.FormulaEditor)](https://github.com/KristofferStrube/Blazor.FormulaEditor/stargazers)
-<!--[![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.FormulaEditor?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.FormulaEditor/)-->
+[![NuGet Downloads (official NuGet)](https://img.shields.io/nuget/dt/KristofferStrube.Blazor.FormulaEditor?label=NuGet%20Downloads)](https://www.nuget.org/packages/KristofferStrube.Blazor.FormulaEditor/)
 
 # Blazor.FormulaEditor
 A basic formula editor written in Blazor.
