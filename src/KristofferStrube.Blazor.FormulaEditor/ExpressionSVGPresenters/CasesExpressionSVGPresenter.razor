@@ -1,9 +1,6 @@
-﻿@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
-@using KristofferStrube.Blazor.FormulaEditor.Components
-@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
-@using KristofferStrube.Blazor.FormulaEditor.Extensions
+﻿@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
 @using KristofferStrube.Blazor.FormulaEditor.Expressions
-@using Microsoft.AspNetCore.Components.Forms
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
 @inherits ExpressionSVGPresenter<CasesExpression>
 
 <path stroke="black" stroke-width="2" fill="none" d="@Fork()" stroke-linecap="round"></path>
@@ -26,11 +23,11 @@
                                    Context="Context" />
 
     <text>
-        <text alignment-baseline="hanging"
+        <text dominant-baseline="middle"
               text-anchor="start"
               style="font-family:monospace;font-size:20px;"
               x="@((PositionX+CasesExpression.ForkWidth+widestValueExpression+CasesExpression.ConditionSpacing).AsString())"
-              y="@((PositionY+previousCaseHeights+forOffset).AsString())">
+              y="@((PositionY+previousCaseHeights+10+forOffset).AsString())">
             @CasesExpression.ForText
         </text>
     </text>
@@ -50,11 +47,11 @@
                                PositionY=PositionY+previousCaseHeights
                                Context="Context" />
 
-<text alignment-baseline="hanging"
+<text dominant-baseline="middle"
       text-anchor="start"
       style="font-family:monospace;font-size:20px;"
       x="@((PositionX + CasesExpression.ForkWidth + widestValueExpression + CasesExpression.ConditionSpacing).AsString())"
-      y="@((PositionY + previousCaseHeights + otherwiseTextOffset).AsString())">
+      y="@((PositionY + previousCaseHeights + 10 + otherwiseTextOffset).AsString())">
     @CasesExpression.OtherwiseText
 </text>
 

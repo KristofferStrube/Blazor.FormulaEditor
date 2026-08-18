@@ -1,9 +1,6 @@
-﻿@using KristofferStrube.Blazor.FormulaEditor.BooleanExpressions
-@using KristofferStrube.Blazor.FormulaEditor.Components
-@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
-@using KristofferStrube.Blazor.FormulaEditor.Extensions
+﻿@using KristofferStrube.Blazor.FormulaEditor.ExpressionSVGPresenters
 @using KristofferStrube.Blazor.FormulaEditor.Expressions
-@using Microsoft.AspNetCore.Components.Forms
+@using KristofferStrube.Blazor.FormulaEditor.Extensions
 @inherits ExpressionSVGPresenter<BinaryOperator>
 
 @if (Expression.Parenthesis)
@@ -22,7 +19,7 @@
       width="20"
       height="20"
       style="font-family:monospace;font-size:20px;"
-      alignment-baseline="middle"
+      dominant-baseline="middle"
       text-anchor="middle">@Expression.Operator</text>
 
 <GenericExpressionSVGPresenter @bind-Expression=@Expression.Second

@@ -1,5 +1,4 @@
-﻿@using KristofferStrube.Blazor.FormulaEditor.Components
-@using KristofferStrube.Blazor.FormulaEditor.Expressions
+﻿@using KristofferStrube.Blazor.FormulaEditor.Expressions
 @using KristofferStrube.Blazor.FormulaEditor.Extensions
 @using Microsoft.AspNetCore.Components.Forms
 @inherits ExpressionSVGPresenter<NumericExpression>
@@ -12,22 +11,22 @@
 @if (editing && Expression.Editable)
 {
     var dimensions = Expression.GetDimensions();
-    <foreignObject x=@PositionX.AsString() y=@PositionY.AsString() width="@dimensions.Width.AsString()" height="@dimensions.Height.AsString()">
+    <foreignObject x=@PositionX.AsString() y=@((PositionY-2.5).AsString()) width="@dimensions.Width.AsString()" height="@dimensions.Height.AsString()">
         <InputNumber @bind-Value=Expression.Value
                      @bind-Value:after=Context.RerenderTree
                      onblur=@(() => StopEdit())
-                     style=@($"padding:0;border:none;text-align:center;font-family:monospace;font-size:20px;line-height:1;width:{dimensions.Width.AsString()}px;height:{dimensions.Height.AsString()}px;") />
+                     style=@($"width:{dimensions.Width.AsString()}px;height:{dimensions.Height.AsString()}px;") />
     </foreignObject>
 }
 else
 {
     var dimensions = Expression.GetDimensions();
     <text>
-        <text alignment-baseline="hanging"
+        <text dominant-baseline="middle"
               text-anchor="middle"
               style="font-family:monospace;font-size:20px;"
               x="@((PositionX + dimensions.Width / 2).AsString())"
-              y="@PositionY.AsString()"
+              y="@((PositionY + dimensions.Height / 2).AsString())"
               ondblclick=@Edit>@Expression.Value</text>
     </text>
 }

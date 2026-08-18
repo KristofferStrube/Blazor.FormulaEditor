@@ -9,3 +9,18 @@
 ::deep input[type=number] {
     -moz-appearance: textfield;
 }
+
+::deep input {
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: monospace;
+    font-size: 20px;
+    line-height: 1;
+    outline: none;
+}
+
+    ::deep input:focus {
+        outline: none;
+    }

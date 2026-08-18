@@ -33,7 +33,7 @@ else
     private (double Width, double Height) dimensions;
     private Dropdown dropdown = default!;
 
-    private RenderFragment content() => @<text><text alignment-baseline="hanging" text-anchor="middle" style="font-family:monospace;font-size:20px;" x="@((PositionX + dimensions.Width / 2).AsString())" y="@PositionY.AsString()">@Expression.Value?.Representation</text></text>;
+    private RenderFragment content() => @<text><text dominant-baseline="middle" text-anchor="middle" style="font-family:monospace;font-size:20px;" x="@((PositionX + dimensions.Width / 2).AsString())" y="@((PositionY + 10).AsString())">@Expression.Value?.Representation</text></text>;
 
     protected override void OnParametersSet()
     {
